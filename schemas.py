@@ -13,6 +13,7 @@ Model name is converted to lowercase for the collection name:
 
 from pydantic import BaseModel, Field
 from typing import Optional
+from datetime import date
 
 # Example schemas (replace with your own):
 
@@ -41,8 +42,29 @@ class Product(BaseModel):
 # Add your own schemas here:
 # --------------------------------------------------
 
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class Consultation(BaseModel):
+    """
+    Consultation requests from businesses wanting a full package
+    Collection name: "consultation"
+    """
+    name: str = Field(..., description="Contact name")
+    email: str = Field(..., description="Contact email")
+    company: Optional[str] = Field(None, description="Company name")
+    phone: Optional[str] = Field(None, description="Phone number")
+    preferred_date: Optional[date] = Field(None, description="Preferred consultation date")
+    preferred_time: Optional[str] = Field(None, description="Preferred time window, e.g., 2-4pm ET")
+    budget_range: Optional[str] = Field(None, description="Rough budget range")
+    message: Optional[str] = Field(None, description="Project goals and context")
+
+class Order(BaseModel):
+    """
+    Orders for small automatic packages
+    Collection name: "order"
+    """
+    package_id: str = Field(..., description="ID of the selected package")
+    package_name: str = Field(..., description="Human-friendly name of the package")
+    price: float = Field(..., ge=0, description="Price at time of order")
+    buyer_name: str = Field(..., description="Buyer name")
+    buyer_email: str = Field(..., description="Buyer email")
+    company: Optional[str] = Field(None, description="Company name")
+    notes: Optional[str] = Field(None, description="Additional notes from buyer")
